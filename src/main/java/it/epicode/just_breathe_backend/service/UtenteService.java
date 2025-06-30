@@ -53,6 +53,7 @@ public class UtenteService {
     }
 
     public Utente getUser(Long id) throws NotFoundException {
+
         return utenteRepository.findById(id).
                 orElseThrow(()-> new NotFoundException("Non è stato trovato alcun utente con id " + id));
     }
@@ -141,8 +142,11 @@ public class UtenteService {
     private void sendMail(String email, Utente utente) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Registrazione Utente");
-        message.setText("Benvenut* " + utente.getNome() +", la tua registrazione è avvenuta con successo!");
+        message.setSubject("Just Breathe - Registrazione utente");
+        message.setText("☀\uFE0F Benvenut* in Just Breathe, " + utente.getNome() + "!\n\n" +
+                        "La tua registrazione è avvenuta con successo! 🎉\n\n" +
+                        "Ora puoi cominciare a rilassarti e a organizzare al meglio la tua giornata. 😊\n\n" +
+                        "Comincia ora: 3, 2, 1... Just Breathe! \uD83C\uDF3F");
 
         javaMailSender.send(message);
     }
