@@ -1,0 +1,51 @@
+package it.epicode.just_breathe_backend.exceptions;
+
+import it.epicode.just_breathe_backend.model.ApiError;
+import org.apache.coyote.BadRequestException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+
+@RestControllerAdvice
+public class CustomizedExeptionHandler {
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError notFoundExceptionHandler(NotFoundException e){
+        ApiError error = new ApiError();
+        error.setMessage(e.getMessage());
+        error.setDataErrore(LocalDateTime.now());
+        return error;
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError validationExceptionHandler(ValidationException e){
+        ApiError error = new ApiError();
+        error.setMessage(e.getMessage());
+        error.setDataErrore(LocalDateTime.now());
+        return error;
+    }
+
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError unauthorizedExceptionHandler(UnauthorizedException e){
+        ApiError error = new ApiError();
+        error.setMessage(e.getMessage());
+        error.setDataErrore(LocalDateTime.now());
+        return error;
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError badRequestExceptionHandler(BadRequestException e){
+        ApiError error = new ApiError();
+        error.setMessage(e.getMessage());
+        error.setDataErrore(LocalDateTime.now());
+        return error;
+    }
+}
