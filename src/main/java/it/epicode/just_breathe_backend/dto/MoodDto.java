@@ -11,9 +11,6 @@ import java.time.LocalDate;
 
 @Data
 public class MoodDto {
-    @NotEmpty(message = "Inserisci il titolo del brano (campo obbligatorio)")
-    private String titoloBrano;
-    private String link;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Come ti senti? Digita un mood - NOSTALGICO, ARRABBIATO, STRESSATO, RILASSATO, ENERGICO, FELICE, ANSIOSO, ANNOIATO, SOPRAFFATTO (campo obbligatorio)")
     private TipoMood tipoMood;

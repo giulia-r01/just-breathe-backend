@@ -1,11 +1,14 @@
 package it.epicode.just_breathe_backend.service;
 
+import it.epicode.just_breathe_backend.dto.BranoDto;
 import it.epicode.just_breathe_backend.dto.MoodDto;
 import it.epicode.just_breathe_backend.enumeration.TipoMood;
 import it.epicode.just_breathe_backend.exceptions.NotFoundException;
 import it.epicode.just_breathe_backend.exceptions.UnauthorizedException;
+import it.epicode.just_breathe_backend.model.Brano;
 import it.epicode.just_breathe_backend.model.Mood;
 import it.epicode.just_breathe_backend.model.Utente;
+import it.epicode.just_breathe_backend.repository.BranoRepository;
 import it.epicode.just_breathe_backend.repository.MoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,79 +31,18 @@ public class MoodService {
     MoodRepository moodRepository;
 
     @Autowired
+    BranoRepository branoRepository;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Value("${youtube.api.key}")
     private String youtubeApiKey;
 
-//    public Mood saveMood(MoodDto moodDto){
-//        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        Mood mood = new Mood();
-//        mood.setDataCreazione(LocalDate.now());
-//        mood.setTitoloBrano(moodDto.getTitoloBrano());
-//        mood.setTipoMood(moodDto.getTipoMood());
-//        mood.setLink(moodDto.getLink());
-//        mood.setUtente(utenteAutenticato);
-//
-//        return moodRepository.save(mood);
-//    }
-
-    public Mood saveMood(MoodDto moodDto) {
-        // 1. Prendo l'utente autenticato dal contesto di sicurezza (Spring Security)
-        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // 2. Preparo la query per cercare su YouTube il titolo del brano (sostituisco spazi con +)
-        String query = moodDto.getTitoloBrano().replace(" ", "+");
-
-        // 3. Costruisco l'URL per la chiamata all'API YouTube Data v3, con la query e la tua API Key (da sostituire)
-        String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + query + "&key=" + youtubeApiKey;
-
-        String linkEsterno = null;
-
-        try {
-            // 4. Chiamata HTTP GET all'API YouTube, mappando la risposta JSON in una Map generica
-            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
-
-            // 5. Se la risposta non è nulla e contiene la chiave "items" (lista di risultati)
-            if (response != null && response.containsKey("items")) {
-                Object itemsObj = response.get("items");
-
-                // 6. Controllo che "items" sia una lista non vuota
-                if (itemsObj instanceof java.util.List<?> items && !items.isEmpty()) {
-                    Map<String, Object> firstItem = (Map<String, Object>) items.get(0);
-
-                    // 7. Controllo che il primo elemento abbia la chiave "id"
-                    if (firstItem.containsKey("id")) {
-                        Map<String, Object> idMap = (Map<String, Object>) firstItem.get("id");
-
-                        // 8. Controllo che dentro "id" ci sia "videoId" (identificativo video YouTube)
-                        if (idMap != null && idMap.containsKey("videoId")) {
-                            String videoId = idMap.get("videoId").toString();
-
-                            // 9. Costruisco il link diretto al video YouTube
-                            linkEsterno = "https://www.youtube.com/watch?v=" + videoId;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // 10. In caso di errore nella chiamata, stampo un messaggio ma continuo senza bloccare
-            System.out.println("Errore chiamata API esterna: " + e.getMessage());
-        }
-
-        // 11. Creo un nuovo oggetto Mood da salvare
+    public Mood saveMood(TipoMood tipoMood, Utente utente) {
         Mood mood = new Mood();
-        mood.setDataCreazione(LocalDate.now());
-        mood.setTitoloBrano(moodDto.getTitoloBrano());
-
-        // 12. Se ho un link esterno valido, lo uso, altrimenti uso quello che arriva dal client
-        mood.setLink(linkEsterno != null ? linkEsterno : moodDto.getLink());
-
-        mood.setTipoMood(moodDto.getTipoMood());
-        mood.setUtente(utenteAutenticato);
-
-        // 13. Salvo il mood nel database e lo ritorno
+        mood.setTipoMood(tipoMood);
+        mood.setUtente(utente);
         return moodRepository.save(mood);
     }
 
@@ -128,12 +71,67 @@ public class MoodService {
     public Mood updateMood(Long id, MoodDto moodDto) throws NotFoundException {
         Mood mood = getMood(id);
 
-        mood.setTitoloBrano(moodDto.getTitoloBrano());
-        mood.setLink(moodDto.getLink());
         mood.setTipoMood(moodDto.getTipoMood());
 
         return moodRepository.save(mood);
     }
+
+    public Brano addBranoToMood(Long moodId, BranoDto branoDto) throws NotFoundException {
+        Mood mood = getMood(moodId);
+
+        String query = branoDto.getTitoloBrano().replace(" ", "+");
+        String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + query + "&key=" + youtubeApiKey;
+
+        String linkEsterno = null;
+
+        try {
+            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+
+            if (response != null && response.containsKey("items")) {
+                Object itemsObj = response.get("items");
+                if (itemsObj instanceof java.util.List<?> items && !items.isEmpty()) {
+                    Map<String, Object> firstItem = (Map<String, Object>) items.get(0);
+                    if (firstItem.containsKey("id")) {
+                        Map<String, Object> idMap = (Map<String, Object>) firstItem.get("id");
+                        if (idMap != null && idMap.containsKey("videoId")) {
+                            String videoId = idMap.get("videoId").toString();
+                            linkEsterno = "https://www.youtube.com/watch?v=" + videoId;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Errore chiamata API esterna: " + e.getMessage());
+        }
+
+        Brano brano = new Brano();
+        brano.setTitoloBrano(branoDto.getTitoloBrano());
+        brano.setLink(linkEsterno != null ? linkEsterno : branoDto.getLink());
+        brano.setMood(mood);
+
+        return branoRepository.save(brano);
+    }
+
+    public List<Brano> getBraniByMood(Long moodId) throws NotFoundException {
+        Mood mood = getMood(moodId);
+        return branoRepository.findByMood(mood);
+    }
+
+    public Brano getBranoById(Long id) throws NotFoundException {
+        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Brano brano = branoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Brano non trovato con id " + id));
+        if (utenteAutenticato.getRuolo().name().equals("USER") && !brano.getMood().getUtente().getId().equals(utenteAutenticato.getId())) {
+            throw new UnauthorizedException("Non puoi visualizzare il brano di un altro utente.");
+        }
+        return brano;
+    }
+
+    public Page<Brano> getAllBrani(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return branoRepository.findAll(pageable);
+    }
+
 
     public Mood patchTipoMood(Long id, TipoMood tipoMood) throws NotFoundException {
         Mood mood = getMood(id);
