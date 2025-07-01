@@ -1,5 +1,6 @@
 package it.epicode.just_breathe_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.epicode.just_breathe_backend.enumeration.Ruolo;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,6 +27,10 @@ public class Utente implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
     private String imgProfilo;
+
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Diario> diari = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
