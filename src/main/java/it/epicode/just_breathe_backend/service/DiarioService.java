@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class DiarioService {
@@ -28,8 +29,8 @@ public class DiarioService {
         Diario diario = new Diario();
         diario.setTitolo(diarioDto.getTitolo());
         diario.setContenuto(diarioDto.getContenuto());
-        diario.setDataInserimento(LocalDate.now());
-        diario.setDataUltimaModifica(LocalDate.now());
+        diario.setDataInserimento(LocalDateTime.now());
+        diario.setDataUltimaModifica(LocalDateTime.now());
         diario.setUtente(utenteAutenticato);
 
         return diarioRepository.save(diario);
@@ -37,7 +38,16 @@ public class DiarioService {
 
 
     public Diario getDiario(Long id) throws NotFoundException {
-        return diarioRepository.findById(id).orElseThrow(()-> new NotFoundException("Voce del diario non trovata"));
+        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Diario diario = diarioRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Voce del diario non trovata"));
+
+        if (utenteAutenticato.getRuolo().name().equals("USER") &&
+                !diario.getUtente().getId().equals(utenteAutenticato.getId())) {
+            throw new UnauthorizedException("Non puoi visualizzare/modificare/eliminare il diario di un altro utente.");
+        }
+
+        return diario;
     }
 
     public Page<Diario> getAllDiarioUtente(int page, int size, String sortBy){
@@ -48,26 +58,18 @@ public class DiarioService {
     }
 
     public Diario updateDiario(Long id, DiarioDto diarioDto) throws NotFoundException {
-        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!utenteAutenticato.getRuolo().name().equals("USER") && utenteAutenticato.getId() != id) {
-            throw new UnauthorizedException("Non puoi modificare il diario di un altro utente.");
-        }
-
         Diario diario = getDiario(id);
+
         diario.setTitolo(diarioDto.getTitolo());
         diario.setContenuto(diarioDto.getContenuto());
-        diario.setDataUltimaModifica(LocalDate.now());
+        diario.setDataUltimaModifica(LocalDateTime.now());
 
         return diarioRepository.save(diario);
     }
 
     public void deleteDiario(Long id) throws NotFoundException {
-        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!utenteAutenticato.getRuolo().name().equals("USER") && utenteAutenticato.getId() != id) {
-            throw new UnauthorizedException("Non puoi eliminare il diario di un altro utente.");
-        }
-
         Diario diario = getDiario(id);
+
         diarioRepository.delete(diario);
     }
 

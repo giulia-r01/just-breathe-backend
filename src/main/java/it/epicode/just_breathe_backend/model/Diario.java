@@ -3,7 +3,7 @@ package it.epicode.just_breathe_backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -11,8 +11,8 @@ public class Diario {
     @Id
     @GeneratedValue
     private Long id;
-    private LocalDate dataInserimento;
-    private LocalDate dataUltimaModifica;
+    private LocalDateTime dataInserimento;
+    private LocalDateTime dataUltimaModifica;
     @Column(columnDefinition = "TEXT")
     private String contenuto;
     private String titolo;
