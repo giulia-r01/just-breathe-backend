@@ -37,6 +37,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/eventi/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/moods/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/brani/**").permitAll());
+        httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/respirazioni/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers(HttpMethod.POST).permitAll());
 
         httpSecurity.authorizeHttpRequests(http->http.anyRequest().denyAll());
