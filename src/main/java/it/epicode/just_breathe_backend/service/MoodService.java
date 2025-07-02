@@ -30,14 +30,6 @@ public class MoodService {
     @Autowired
     MoodRepository moodRepository;
 
-    @Autowired
-    BranoRepository branoRepository;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Value("${youtube.api.key}")
-    private String youtubeApiKey;
 
     public Mood saveMood(TipoMood tipoMood, Utente utente) {
         Mood mood = new Mood();
@@ -74,62 +66,6 @@ public class MoodService {
         mood.setTipoMood(moodDto.getTipoMood());
 
         return moodRepository.save(mood);
-    }
-
-    public Brano addBranoToMood(Long moodId, BranoDto branoDto) throws NotFoundException {
-        Mood mood = getMood(moodId);
-
-        String query = branoDto.getTitoloBrano().replace(" ", "+");
-        String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + query + "&key=" + youtubeApiKey;
-
-        String linkEsterno = null;
-
-        try {
-            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
-
-            if (response != null && response.containsKey("items")) {
-                Object itemsObj = response.get("items");
-                if (itemsObj instanceof java.util.List<?> items && !items.isEmpty()) {
-                    Map<String, Object> firstItem = (Map<String, Object>) items.get(0);
-                    if (firstItem.containsKey("id")) {
-                        Map<String, Object> idMap = (Map<String, Object>) firstItem.get("id");
-                        if (idMap != null && idMap.containsKey("videoId")) {
-                            String videoId = idMap.get("videoId").toString();
-                            linkEsterno = "https://www.youtube.com/watch?v=" + videoId;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Errore chiamata API esterna: " + e.getMessage());
-        }
-
-        Brano brano = new Brano();
-        brano.setTitoloBrano(branoDto.getTitoloBrano());
-        brano.setLink(linkEsterno != null ? linkEsterno : branoDto.getLink());
-        brano.setMood(mood);
-
-        return branoRepository.save(brano);
-    }
-
-    public List<Brano> getBraniByMood(Long moodId) throws NotFoundException {
-        Mood mood = getMood(moodId);
-        return branoRepository.findByMood(mood);
-    }
-
-    public Brano getBranoById(Long id) throws NotFoundException {
-        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Brano brano = branoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Brano non trovato con id " + id));
-        if (utenteAutenticato.getRuolo().name().equals("USER") && !brano.getMood().getUtente().getId().equals(utenteAutenticato.getId())) {
-            throw new UnauthorizedException("Non puoi visualizzare il brano di un altro utente.");
-        }
-        return brano;
-    }
-
-    public Page<Brano> getAllBrani(int page, int size, String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return branoRepository.findAll(pageable);
     }
 
 
