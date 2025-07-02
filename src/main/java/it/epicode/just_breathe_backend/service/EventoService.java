@@ -44,7 +44,6 @@ public class EventoService {
             "torino", "45.0703,7.6869",
             "firenze", "43.7696,11.2558",
             "bologna", "44.4949,11.3426"
-            // aggiungi altre città se vuoi
     );
 
     public List<EventoDto> getAllEventi(String citta) {
@@ -116,7 +115,7 @@ public class EventoService {
 
                     dto.setNome((String) event.get("title"));
 
-                    // Gestione robusta campo "start"
+
                     String startDate = null;
                     Object startObj = event.get("start");
                     if (startObj instanceof Map) {
@@ -167,7 +166,7 @@ public class EventoService {
                     eventiEsterni.add(dto);
                 }
 
-                // Se dopo il filtro la lista è vuota, aggiungi messaggio amichevole
+                // Se dopo il filtro la lista è vuota, aggiungo messaggio
                 if (eventiEsterni.isEmpty()) {
                     EventoDto dtoVuoto = new EventoDto();
                     dtoVuoto.setNome("Non ci sono eventi disponibili nella città cercata.");
@@ -198,6 +197,19 @@ public class EventoService {
         evento.setUtente(utente);
 
         return eventoRepository.save(evento);
+    }
+
+    public Evento getEventoById(Long id) throws NotFoundException, UnauthorizedException {
+        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Evento evento = eventoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Evento con id " + id + " non trovato"));
+
+        if (utenteAutenticato.getRuolo().name().equals("USER") &&
+                !evento.getUtente().getId().equals(utenteAutenticato.getId())) {
+            throw new UnauthorizedException("Non puoi visualizzare l'evento di un altro utente.");
+        }
+
+        return evento;
     }
 
     public Page<Evento> getAllEventiByUser(int page, int size, String sortBy) {
