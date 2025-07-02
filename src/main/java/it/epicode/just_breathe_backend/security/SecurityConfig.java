@@ -34,6 +34,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/utenti/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/diari/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/tasks/**").permitAll());
+        httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/eventi/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/moods/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/brani/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers(HttpMethod.POST).permitAll());

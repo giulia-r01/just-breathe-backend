@@ -40,6 +40,10 @@ public class Utente implements UserDetails {
     @JsonIgnore
     private List<Mood> moods = new ArrayList<>();
 
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Evento> eventi = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(ruolo.name()));
