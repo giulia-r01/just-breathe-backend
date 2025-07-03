@@ -31,9 +31,16 @@ public class UtenteController {
     UtenteRepository utenteRepository;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Utente getUser(@PathVariable Long id) throws NotFoundException {
         return utenteService.getUser(id);
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public Utente getProfilo() throws NotFoundException {
+        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return utenteService.getUser(utenteAutenticato.getId());
     }
 
     @GetMapping("")
@@ -45,7 +52,7 @@ public class UtenteController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Utente updateUser(@PathVariable Long id, @RequestBody
                                @Validated UtenteDto utenteDto,
                                BindingResult bindingResult) throws NotFoundException, ValidationException {
@@ -59,7 +66,7 @@ public class UtenteController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Utente patchUser(@PathVariable Long id,
                             @RequestParam("file") MultipartFile file)
             throws NotFoundException, IOException {
@@ -67,7 +74,7 @@ public class UtenteController {
     }
 
     @PatchMapping("/{id}/username")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Utente patchUsername(@PathVariable Long id, @RequestParam String nuovoUsername) throws BadRequestException {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -88,7 +95,7 @@ public class UtenteController {
     }
 
     @PatchMapping("/{id}/password")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Utente> patchPassword(
             @PathVariable Long id,
             @RequestParam String vecchiaPassword,
@@ -100,7 +107,7 @@ public class UtenteController {
 
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public void deleteUser(@PathVariable Long id) throws NotFoundException {
         utenteService.deleteUser(id);
     }

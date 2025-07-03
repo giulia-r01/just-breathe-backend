@@ -67,9 +67,10 @@ public class UtenteService {
     public Utente updateUser(Long id, UtenteDto utenteDto) throws NotFoundException {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (!utenteAutenticato.getRuolo().name().equals("USER") && utenteAutenticato.getId() != id) {
+        if (utenteAutenticato.getRuolo() == Ruolo.USER && !utenteAutenticato.getId().equals(id)) {
             throw new UnauthorizedException("Non puoi modificare un altro utente.");
-        }
+
+    }
 
         Utente utenteDaAggiornare = getUser(id);
 
