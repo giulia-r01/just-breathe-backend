@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,9 @@ public class Utente implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
     private String imgProfilo;
+    private LocalDateTime dataRegistrazione;
+    private boolean attivo;
+    private LocalDateTime lastAccess;
 
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -66,6 +70,6 @@ public class Utente implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return attivo;
     }
 }

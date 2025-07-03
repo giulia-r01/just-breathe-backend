@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthService {
 
@@ -25,6 +27,9 @@ public class AuthService {
         Utente utente = utenteRepository.findByUsername(loginDto.getUsername()).orElseThrow(
                 ()->new NotFoundException("Utente con username/password non trovato"));
         if (passwordEncoder.matches(loginDto.getPassword(), utente.getPassword())){
+
+            utente.setLastAccess(LocalDateTime.now());
+            utenteRepository.save(utente);
             return jwtTool.createToken(utente);
         }else {
             throw new NotFoundException("Utente con username/password non trovato");

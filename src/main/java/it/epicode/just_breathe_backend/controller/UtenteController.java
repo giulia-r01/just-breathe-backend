@@ -43,14 +43,6 @@ public class UtenteController {
         return utenteService.getUser(utenteAutenticato.getId());
     }
 
-    @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<Utente> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "10") int size,
-                                     @RequestParam(defaultValue = "id") String sortBy){
-        return utenteService.getAllUsers(page, size, sortBy);
-    }
-
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Utente updateUser(@PathVariable Long id, @RequestBody

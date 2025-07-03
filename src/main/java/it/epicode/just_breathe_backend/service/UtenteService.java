@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
@@ -44,6 +45,9 @@ public class UtenteService {
         utente.setCognome(utenteDto.getCognome());
         utente.setEmail(utenteDto.getEmail());
         utente.setUsername(utenteDto.getUsername());
+        utente.setDataRegistrazione(LocalDateTime.now());
+        utente.setAttivo(utente.isAttivo());
+        utente.setLastAccess(LocalDateTime.now());
         utente.setPassword(passwordEncoder.encode(utenteDto.getPassword()));
         utente.setRuolo(Ruolo.USER);
 
@@ -58,10 +62,6 @@ public class UtenteService {
                 orElseThrow(()-> new NotFoundException("Non è stato trovato alcun utente con id " + id));
     }
 
-    public Page<Utente> getAllUsers(int page, int size, String sortBy){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return utenteRepository.findAll(pageable);
-    }
 
 
     public Utente updateUser(Long id, UtenteDto utenteDto) throws NotFoundException {
