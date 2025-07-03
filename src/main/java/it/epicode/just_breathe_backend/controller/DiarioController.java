@@ -50,7 +50,7 @@ public class DiarioController {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     public Page<Diario> getAllDiari(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size,
                                                  @RequestParam(defaultValue = "id") String sortBy){

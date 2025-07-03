@@ -31,6 +31,7 @@ public class ToDoService {
         toDo.setTitolo(toDoListDto.getTitolo());
         toDo.setDescrizione(toDoListDto.getDescrizione());
         toDo.setDataCreazioneTask(LocalDateTime.now());
+        toDo.setDataUltimaModificaTask(LocalDateTime.now());
         toDo.setTipoTask(toDoListDto.getTipoTask());
         toDo.setUtente(utenteAutenticato);
 

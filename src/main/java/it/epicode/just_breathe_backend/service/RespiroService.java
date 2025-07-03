@@ -7,6 +7,7 @@ import it.epicode.just_breathe_backend.repository.RespiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,6 +22,7 @@ public class RespiroService {
         respiro.setNome(respiroDto.getNome());
         respiro.setDescrizione(respiroDto.getDescrizione());
         respiro.setDurata(respiroDto.getDurata());
+        respiro.setDataCreazione(LocalDateTime.now());
         return respiroRepository.save(respiro);
     }
 

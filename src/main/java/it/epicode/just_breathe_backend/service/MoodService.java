@@ -34,6 +34,7 @@ public class MoodService {
     public Mood saveMood(TipoMood tipoMood, Utente utente) {
         Mood mood = new Mood();
         mood.setTipoMood(tipoMood);
+        mood.setDataCreazione(LocalDate.now());
         mood.setUtente(utente);
         return moodRepository.save(mood);
     }
@@ -58,6 +59,11 @@ public class MoodService {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return moodRepository.findByUtente(utenteAutenticato, pageable);
+    }
+
+    public Mood getUltimoMoodPerUtente(Long utenteId) {
+        return moodRepository.findTopByUtenteIdOrderByDataCreazioneDesc(utenteId)
+                .orElse(null);
     }
 
     public Mood updateMood(Long id, MoodDto moodDto) throws NotFoundException {

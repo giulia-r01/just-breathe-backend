@@ -14,4 +14,5 @@ public class MoodDto {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Come ti senti? Digita un mood - NOSTALGICO, ARRABBIATO, STRESSATO, RILASSATO, ENERGICO, FELICE, ANSIOSO, ANNOIATO, SOPRAFFATTO (campo obbligatorio)")
     private TipoMood tipoMood;
+    private LocalDate dataCreazione;
 }

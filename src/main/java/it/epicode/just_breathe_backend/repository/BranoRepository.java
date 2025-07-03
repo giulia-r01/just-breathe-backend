@@ -12,5 +12,6 @@ import java.util.List;
 public interface BranoRepository extends JpaRepository<Brano, Long> {
     List<Brano> findByMood(Mood mood);
     Page<Brano> findByMood_Utente(Utente utente, Pageable pageable);
+    List<Brano> findByMoodId(Long moodId);
 
 }

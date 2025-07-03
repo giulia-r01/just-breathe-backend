@@ -6,8 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     Page<Evento> findByUtente(Utente utente, Pageable pageable);
+
+    List<Evento> findByUtenteOrderByDataEventoDesc(Utente utente);
 }

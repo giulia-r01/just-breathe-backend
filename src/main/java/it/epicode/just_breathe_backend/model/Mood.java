@@ -16,6 +16,7 @@ public class Mood {
     private Long id;
     @Enumerated(EnumType.STRING)
     private TipoMood tipoMood;
+    private LocalDate dataCreazione;
 
     @ManyToOne
     @JoinColumn(name = "utente_id")

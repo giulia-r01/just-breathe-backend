@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class Respiro {
@@ -14,4 +16,5 @@ public class Respiro {
     private String nome;
     private String descrizione;
     private int durata;
+    private LocalDateTime dataCreazione;
 }
