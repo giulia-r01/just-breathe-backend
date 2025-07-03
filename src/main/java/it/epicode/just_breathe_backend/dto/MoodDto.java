@@ -7,12 +7,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class MoodDto {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Come ti senti? Digita un mood - NOSTALGICO, ARRABBIATO, STRESSATO, RILASSATO, ENERGICO, FELICE, ANSIOSO, ANNOIATO, SOPRAFFATTO (campo obbligatorio)")
     private TipoMood tipoMood;
-    private LocalDate dataCreazione;
+    private LocalDateTime dataCreazione;
 }

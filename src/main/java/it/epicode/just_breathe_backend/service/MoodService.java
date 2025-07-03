@@ -1,26 +1,22 @@
 package it.epicode.just_breathe_backend.service;
 
-import it.epicode.just_breathe_backend.dto.BranoDto;
 import it.epicode.just_breathe_backend.dto.MoodDto;
 import it.epicode.just_breathe_backend.enumeration.TipoMood;
 import it.epicode.just_breathe_backend.exceptions.NotFoundException;
 import it.epicode.just_breathe_backend.exceptions.UnauthorizedException;
-import it.epicode.just_breathe_backend.model.Brano;
 import it.epicode.just_breathe_backend.model.Mood;
 import it.epicode.just_breathe_backend.model.Utente;
-import it.epicode.just_breathe_backend.repository.BranoRepository;
 import it.epicode.just_breathe_backend.repository.MoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +30,7 @@ public class MoodService {
     public Mood saveMood(TipoMood tipoMood, Utente utente) {
         Mood mood = new Mood();
         mood.setTipoMood(tipoMood);
-        mood.setDataCreazione(LocalDate.now());
+        mood.setDataCreazione(LocalDateTime.now());
         mood.setUtente(utente);
         return moodRepository.save(mood);
     }

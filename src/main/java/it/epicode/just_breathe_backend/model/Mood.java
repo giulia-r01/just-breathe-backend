@@ -5,7 +5,7 @@ import it.epicode.just_breathe_backend.enumeration.TipoMood;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,7 +16,7 @@ public class Mood {
     private Long id;
     @Enumerated(EnumType.STRING)
     private TipoMood tipoMood;
-    private LocalDate dataCreazione;
+    private LocalDateTime dataCreazione;
 
     @ManyToOne
     @JoinColumn(name = "utente_id")
