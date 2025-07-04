@@ -1,22 +1,25 @@
 package it.epicode.just_breathe_backend.controller;
 
 import it.epicode.just_breathe_backend.dto.LoginDto;
+import it.epicode.just_breathe_backend.dto.RecuperoPswDto;
+import it.epicode.just_breathe_backend.dto.ResetPswDto;
 import it.epicode.just_breathe_backend.dto.UtenteDto;
 import it.epicode.just_breathe_backend.exceptions.NotFoundException;
 import it.epicode.just_breathe_backend.model.Utente;
 import it.epicode.just_breathe_backend.service.AuthService;
+import it.epicode.just_breathe_backend.service.ResetTokenService;
 import it.epicode.just_breathe_backend.service.UtenteService;
+import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(path = "/auth")
 public class AuthController {
 
     @Autowired
@@ -25,7 +28,10 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/auth/register")
+    @Autowired
+    private ResetTokenService resetTokenService;
+
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public Utente register(@RequestBody @Validated UtenteDto utenteDto,
                            BindingResult bindingResult) throws ValidationException {
@@ -38,7 +44,7 @@ public class AuthController {
         return utenteService.saveUser(utenteDto);
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public String login(@RequestBody @Validated LoginDto loginDto,
                         BindingResult bindingResult) throws ValidationException, NotFoundException {
         if(bindingResult.hasErrors()){
@@ -49,5 +55,25 @@ public class AuthController {
 
 
         return authService.login(loginDto);
+    }
+
+    @PostMapping("/password/recupero")
+    public ResponseEntity<String> inviaToken(@Valid @RequestBody RecuperoPswDto dto) {
+        try {
+            resetTokenService.inviaTokenRecuperoPassword(dto);
+            return ResponseEntity.ok("Email di recupero password inviata con successo");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<String> resettaPassword(@Valid @RequestBody ResetPswDto dto) {
+        try {
+            resetTokenService.resettaPassword(dto);
+            return ResponseEntity.ok("Password resettata con successo");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

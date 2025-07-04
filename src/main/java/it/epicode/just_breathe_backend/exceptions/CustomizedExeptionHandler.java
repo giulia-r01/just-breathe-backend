@@ -48,4 +48,24 @@ public class CustomizedExeptionHandler {
         error.setDataErrore(LocalDateTime.now());
         return error;
     }
+
+    @ExceptionHandler(TokenInvalidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError tokenInvalidExceptionHandler(TokenInvalidException e){
+        ApiError error = new ApiError();
+        error.setMessage(e.getMessage());
+        error.setDataErrore(LocalDateTime.now());
+        return error;
+    }
+
+
+    @ExceptionHandler(TokenExpiredException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError tokenExpiredExceptionHandler(TokenExpiredException e){
+        ApiError error = new ApiError();
+        error.setMessage(e.getMessage());
+        error.setDataErrore(LocalDateTime.now());
+        return error;
+    }
+
 }
