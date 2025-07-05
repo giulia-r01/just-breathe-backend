@@ -146,6 +146,7 @@ public class UtenteService {
         message.setSubject("Just Breathe - Registrazione utente");
         message.setText("☀\uFE0F Benvenut* in Just Breathe, " + utente.getNome() + "!\n\n" +
                         "La tua registrazione è avvenuta con successo! 🎉\n\n" +
+                        "Il tuo username è: " + utente.getUsername() + "\n\n" +
                         "Ora puoi cominciare a rilassarti e a organizzare al meglio la tua giornata. 😊\n\n" +
                         "Comincia ora: 3, 2, 1... Just Breathe! \uD83C\uDF3F");
 
