@@ -60,13 +60,14 @@ public class ResetTokenService {
         message.setTo(utente.getEmail());
         message.setSubject("Recupero password - Just Breathe");
         String linkReset = frontendBaseUrl + "/reset-password?token=" + token;
-        message.setText("Ciao "+ utente.getNome() +
-                " ,\n\n Hai richiesto il reset della password per il tuo account Just Breathe.\n\n"
-                + "Per completare la procedura, clicca sul link qui sotto (valido per 30 minuti):\n"
-                + linkReset + "\n\n"
-                + "Se non hai richiesto questo reset, ignora pure questa email — la tua password resterà invariata.\n\n"
-                + "Grazie,\n"
-                + "Il team di Just Breathe");
+        message.setText("🌿 Ciao " + utente.getNome() + ",\n\n" +
+                "Hai richiesto di reimpostare la tua password su Just Breathe.\n\n" +
+                "Clicca sul link qui sotto per scegliere una nuova password (valido per 30 minuti):\n\n" +
+                linkReset + "\n\n" +
+                "Se non hai richiesto questo reset, ignora questa mail e tutto resterà al sicuro.\n\n" +
+                "Respira, rilassati e torna a goderti la giornata! 🌞\n\n" +
+                "Con affetto,\n" +
+                "Il team Just Breathe 🌬️");
         mailSender.send(message);
     }
 
