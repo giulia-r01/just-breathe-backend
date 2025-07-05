@@ -33,7 +33,7 @@ public class SecurityConfig {
 
 
 
-        httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/auth/**").permitAll());
+        httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/auth/**", "/password/recupero", "/password/reset").permitAll());
 // httpSecurity.authorizeHttpRequests(http->http.requestMatchers(HttpMethod.GET,"/auth/**").permitAll());
 
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/utenti/**").permitAll());
