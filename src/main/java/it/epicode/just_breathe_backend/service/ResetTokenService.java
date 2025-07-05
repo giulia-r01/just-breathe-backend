@@ -48,11 +48,22 @@ public class ResetTokenService {
         String token = UUID.randomUUID().toString();
         LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_MINUTES);
 
-        ResetToken resetToken = new ResetToken();
-        resetToken.setToken(token);
-        resetToken.setExpiryDate(expiryDate);
-        resetToken.setUsed(false);
-        resetToken.setUtente(utente);
+
+        Optional<ResetToken> existingTokenOpt = resetTokenRepository.findByUtente(utente);
+
+        ResetToken resetToken;
+        if (existingTokenOpt.isPresent()) {
+            resetToken = existingTokenOpt.get();
+            resetToken.setToken(token);
+            resetToken.setExpiryDate(expiryDate);
+            resetToken.setUsed(false);
+        } else {
+            resetToken = new ResetToken();
+            resetToken.setToken(token);
+            resetToken.setExpiryDate(expiryDate);
+            resetToken.setUsed(false);
+            resetToken.setUtente(utente);
+        }
 
         resetTokenRepository.save(resetToken);
 
