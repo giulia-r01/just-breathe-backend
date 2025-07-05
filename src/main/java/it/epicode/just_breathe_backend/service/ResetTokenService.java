@@ -99,8 +99,12 @@ public class ResetTokenService {
         }
 
         Utente utente = resetToken.getUtente();
-        utente.setPassword(passwordEncoder.encode(dto.getNuovaPassword()));
 
+        if (passwordEncoder.matches(dto.getNuovaPassword(), utente.getPassword())) {
+            throw new TokenInvalidException("La nuova password non può essere uguale alla precedente.");
+        }
+
+        utente.setPassword(passwordEncoder.encode(dto.getNuovaPassword()));
         utenteRepository.save(utente);
 
         resetToken.setUsed(true);
