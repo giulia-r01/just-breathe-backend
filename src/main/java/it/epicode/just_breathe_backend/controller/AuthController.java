@@ -18,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(path = "/auth")
 public class AuthController {
@@ -45,8 +47,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody @Validated LoginDto loginDto,
-                        BindingResult bindingResult) throws ValidationException, NotFoundException {
+    public Map<String, String> login(@RequestBody @Validated LoginDto loginDto,
+                            BindingResult bindingResult) throws ValidationException, NotFoundException {
         if(bindingResult.hasErrors()){
             throw new ValidationException(bindingResult.getAllErrors().
                     stream().map(objectError -> objectError.getDefaultMessage())

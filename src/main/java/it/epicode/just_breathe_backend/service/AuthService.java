@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -23,14 +25,22 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String login(LoginDto loginDto) throws NotFoundException {
+    public Map<String, String> login(LoginDto loginDto) throws NotFoundException {
         Utente utente = utenteRepository.findByUsername(loginDto.getUsername()).orElseThrow(
                 ()->new NotFoundException("Utente con username/password non trovato"));
+
         if (passwordEncoder.matches(loginDto.getPassword(), utente.getPassword())){
 
             utente.setLastAccess(LocalDateTime.now());
             utenteRepository.save(utente);
-            return jwtTool.createToken(utente);
+
+            String token = jwtTool.createToken(utente);
+            String ruolo = utente.getRuolo().name();
+
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("ruolo", ruolo);
+            return response;
         }else {
             throw new NotFoundException("Utente con username/password non trovato");
         }
