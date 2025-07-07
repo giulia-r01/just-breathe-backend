@@ -65,6 +65,6 @@ public class JwtFilter extends OncePerRequestFilter {
         return matcher.match("/auth/**", path) ||
                 matcher.match("/password/recupero", path) ||
                 matcher.match("/password/reset", path) ||
-                matcher.match("/respirazioni/**", path);
+                (matcher.match("/respirazioni/**", path) && request.getMethod().equals("GET"));
     }
 }
