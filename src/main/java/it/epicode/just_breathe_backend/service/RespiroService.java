@@ -21,8 +21,11 @@ public class RespiroService {
 
         respiro.setNome(respiroDto.getNome());
         respiro.setDescrizione(respiroDto.getDescrizione());
-        respiro.setDurata(respiroDto.getDurata());
         respiro.setDataCreazione(LocalDateTime.now());
+        respiro.setInspiraSecondi(respiroDto.getInspiraSecondi());
+        respiro.setTrattieniSecondi(respiroDto.getTrattieniSecondi());
+        respiro.setEspiraSecondi(respiroDto.getEspiraSecondi());
+        respiro.setCategoria(respiroDto.getCategoria());
         return respiroRepository.save(respiro);
     }
 
@@ -37,13 +40,16 @@ public class RespiroService {
         return respiroRepository.findAll();
     }
 
-    public Respiro updateRespiro(Long id, RespiroDto dto) throws NotFoundException {
+    public Respiro updateRespiro(Long id, RespiroDto respiroDto) throws NotFoundException {
         Respiro respiro = respiroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Respiro non trovato"));
 
-        respiro.setNome(dto.getNome());
-        respiro.setDescrizione(dto.getDescrizione());
-        respiro.setDurata(dto.getDurata());
+        respiro.setNome(respiroDto.getNome());
+        respiro.setDescrizione(respiroDto.getDescrizione());
+        respiro.setInspiraSecondi(respiroDto.getInspiraSecondi());
+        respiro.setTrattieniSecondi(respiroDto.getTrattieniSecondi());
+        respiro.setEspiraSecondi(respiroDto.getEspiraSecondi());
+        respiro.setCategoria(respiroDto.getCategoria());
 
         return respiroRepository.save(respiro);
     }

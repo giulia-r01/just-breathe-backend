@@ -1,8 +1,7 @@
 package it.epicode.just_breathe_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import it.epicode.just_breathe_backend.enumeration.TipoRespiro;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,6 +14,10 @@ public class Respiro {
     private Long id;
     private String nome;
     private String descrizione;
-    private int durata;
+    private int inspiraSecondi;
+    private int trattieniSecondi;
+    private int espiraSecondi;
     private LocalDateTime dataCreazione;
+    @Enumerated(EnumType.STRING)
+    private TipoRespiro categoria;
 }
