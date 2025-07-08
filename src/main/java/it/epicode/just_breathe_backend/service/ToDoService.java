@@ -34,7 +34,8 @@ public class ToDoService {
         ToDoList toDo = new ToDoList();
         toDo.setTitolo(toDoListDto.getTitolo());
         toDo.setDescrizione(toDoListDto.getDescrizione());
-        LocalDateTime dataCreazione = OffsetDateTime.parse(toDoListDto.getDataCreazioneTask()).toLocalDateTime();
+        LocalDate date = LocalDate.parse(toDoListDto.getDataCreazioneTask());
+        LocalDateTime dataCreazione = date.atStartOfDay();
         toDo.setDataCreazioneTask(dataCreazione);
         toDo.setDataUltimaModificaTask(LocalDateTime.now());
         toDo.setTipoTask(toDoListDto.getTipoTask());
@@ -69,7 +70,7 @@ public class ToDoService {
 
         toDo.setTitolo(toDoListDto.getTitolo());
         toDo.setDescrizione(toDoListDto.getDescrizione());
-        LocalDateTime dataCreazione = OffsetDateTime.parse(toDoListDto.getDataCreazioneTask()).toLocalDateTime();
+        LocalDateTime dataCreazione = LocalDate.parse(toDoListDto.getDataCreazioneTask()).atStartOfDay();
         toDo.setDataCreazioneTask(dataCreazione);
         toDo.setTipoTask(toDoListDto.getTipoTask());
         toDo.setDataUltimaModificaTask(LocalDateTime.now());
