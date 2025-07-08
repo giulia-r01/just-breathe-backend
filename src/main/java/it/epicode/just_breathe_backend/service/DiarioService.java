@@ -52,7 +52,7 @@ public class DiarioService {
 
     public Page<Diario> getAllDiarioUtente(int page, int size, String sortBy){
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
 
         return diarioRepository.findByUtente(utenteAutenticato, pageable);
     }
