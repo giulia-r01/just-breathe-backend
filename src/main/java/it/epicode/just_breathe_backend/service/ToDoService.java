@@ -14,7 +14,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Service
@@ -30,7 +34,8 @@ public class ToDoService {
         ToDoList toDo = new ToDoList();
         toDo.setTitolo(toDoListDto.getTitolo());
         toDo.setDescrizione(toDoListDto.getDescrizione());
-        toDo.setDataCreazioneTask(LocalDateTime.now());
+        LocalDateTime dataCreazione = OffsetDateTime.parse(toDoListDto.getDataCreazioneTask()).toLocalDateTime();
+        toDo.setDataCreazioneTask(dataCreazione);
         toDo.setDataUltimaModificaTask(LocalDateTime.now());
         toDo.setTipoTask(toDoListDto.getTipoTask());
         toDo.setUtente(utenteAutenticato);
@@ -64,6 +69,8 @@ public class ToDoService {
 
         toDo.setTitolo(toDoListDto.getTitolo());
         toDo.setDescrizione(toDoListDto.getDescrizione());
+        LocalDateTime dataCreazione = OffsetDateTime.parse(toDoListDto.getDataCreazioneTask()).toLocalDateTime();
+        toDo.setDataCreazioneTask(dataCreazione);
         toDo.setTipoTask(toDoListDto.getTipoTask());
         toDo.setDataUltimaModificaTask(LocalDateTime.now());
 

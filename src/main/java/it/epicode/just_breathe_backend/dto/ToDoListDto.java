@@ -17,4 +17,6 @@ public class ToDoListDto {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Inserisci lo stato del task (campo obbligatorio)")
     private TipoTask tipoTask;
+    @NotEmpty(message = "Inserisci la data del task (campo obbligatorio)")
+    private String dataCreazioneTask;
 }
