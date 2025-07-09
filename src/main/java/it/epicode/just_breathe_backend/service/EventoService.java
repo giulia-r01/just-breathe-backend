@@ -37,13 +37,29 @@ public class EventoService {
     private String predicthqApiToken;
 
     // Mappa statica città → coordinate (lat, lon)
-    private static final Map<String, String> cityCoordinates = Map.of(
-            "roma", "41.9028,12.4964",
-            "milano", "45.4642,9.1900",
-            "napoli", "40.8518,14.2681",
-            "torino", "45.0703,7.6869",
-            "firenze", "43.7696,11.2558",
-            "bologna", "44.4949,11.3426"
+    private static final Map<String, String> cityCoordinates = Map.ofEntries(
+            Map.entry("roma", "41.9028,12.4964"),
+            Map.entry("bari", "41.1171,16.8719"),
+            Map.entry("milano", "45.4642,9.1900"),
+            Map.entry("napoli", "40.8518,14.2681"),
+            Map.entry("torino", "45.0703,7.6869"),
+            Map.entry("firenze", "43.7696,11.2558"),
+            Map.entry("bologna", "44.4949,11.3426"),
+            Map.entry("genova", "44.4056,8.9463"),
+            Map.entry("palermo", "38.1157,13.3615"),
+            Map.entry("verona", "45.4384,10.9916"),
+            Map.entry("cagliari", "39.2238,9.1217"),
+            Map.entry("venezia", "45.4408,12.3155"),
+            Map.entry("trieste", "45.6495,13.7768"),
+            Map.entry("padova", "45.4064,11.8768"),
+            Map.entry("perugia", "43.1107,12.3908"),
+            Map.entry("trento", "46.0748,11.1217"),
+            Map.entry("modena", "44.6471,10.9252"),
+            Map.entry("reggio emilia", "44.6983,10.6290"),
+            Map.entry("rimini", "44.0678,12.5695"),
+            Map.entry("taranto", "40.4644,17.2470"),
+            Map.entry("ancona", "43.6158,13.5189")
+
     );
 
     public List<EventoDto> getAllEventi(String citta) {
