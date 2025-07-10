@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,11 +99,32 @@ public class BackOfficeService {
             int diariCount = u.getDiari() != null ? u.getDiari().size() : 0;
             int todoCount = u.getToDoLists() != null ? u.getToDoLists().size() : 0;
             int moodCount = u.getMoods() != null ? u.getMoods().size() : 0;
+            int eventiCount = u.getEventi() != null ? u.getEventi().size() : 0;
 
-            totalActivities += (diariCount + todoCount + moodCount);
+            totalActivities += (diariCount + todoCount + moodCount + eventiCount);
         }
 
         return (double) totalActivities / utenti.size();
     }
+
+    public List<Map<String, Object>> getAttivitaDettagliatePerUtente() {
+        List<Utente> utenti = utenteRepository.findAll();
+        List<Map<String, Object>> lista = new ArrayList<>();
+
+        for (Utente u : utenti) {
+            Map<String, Object> mappa = new HashMap<>();
+            mappa.put("id", u.getId());
+            mappa.put("username", u.getUsername());
+            mappa.put("diari", u.getDiari() != null ? u.getDiari().size() : 0);
+            mappa.put("tasks", u.getToDoLists() != null ? u.getToDoLists().size() : 0);
+            mappa.put("eventi", u.getEventi() != null ? u.getEventi().size() : 0);
+            mappa.put("moods", u.getMoods() != null ? u.getMoods().size() : 0);
+
+            lista.add(mappa);
+        }
+
+        return lista;
+    }
+
 }
 

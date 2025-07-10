@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -70,4 +71,11 @@ public class BackOfficeController {
     public double getMediaAttivitaPerUtente() {
         return backOfficeService.getAverageActivitiesPerUser();
     }
+
+    @GetMapping("/statistiche/attivita-utenti")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<Map<String, Object>> getAttivitaDettagliatePerUtente() {
+        return backOfficeService.getAttivitaDettagliatePerUtente();
+    }
+
 }
