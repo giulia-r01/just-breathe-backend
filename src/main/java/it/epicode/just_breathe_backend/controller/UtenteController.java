@@ -67,24 +67,10 @@ public class UtenteController {
 
     @PatchMapping("/{id}/username")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public Utente patchUsername(@PathVariable Long id, @RequestParam String nuovoUsername) throws BadRequestException {
-        Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!utenteAutenticato.getId().equals(id)) {
-            throw new UnauthorizedException("Puoi modificare solo il tuo username.");
-        }
-
-        if (utenteRepository.findByUsername(nuovoUsername).isPresent()) {
-            throw new BadRequestException("Questo username è già stato utilizzato.");
-        }
-
-        if (utenteAutenticato.getUsername().equals(nuovoUsername)) {
-            throw new BadRequestException("Il nuovo username deve essere diverso dal precedente.");
-        }
-
-        utenteAutenticato.setUsername(nuovoUsername);
-        return utenteRepository.save(utenteAutenticato);
+    public Utente patchUsername(@PathVariable Long id, @RequestParam String nuovoUsername) throws NotFoundException, BadRequestException {
+        return utenteService.patchUsername(id, nuovoUsername);
     }
+
 
     @PatchMapping("/{id}/password")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")

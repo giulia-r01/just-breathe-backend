@@ -194,7 +194,7 @@ public class EventoService {
             dtoErrore.setNome("Errore durante il recupero degli eventi: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             eventiEsterni.add(dtoErrore);
         }
-
+        eventiEsterni.sort(Comparator.comparing(EventoDto::getDataEvento, Comparator.nullsLast(Comparator.naturalOrder())));
         return eventiEsterni;
     }
 

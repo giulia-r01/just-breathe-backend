@@ -99,7 +99,6 @@ public class UtenteService {
 
     public Utente patchUsername(Long id, String nuovoUsername) throws NotFoundException, BadRequestException {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         if (!utenteAutenticato.getId().equals(id)) {
             throw new UnauthorizedException("Puoi modificare solo il tuo username.");
         }
@@ -113,6 +112,9 @@ public class UtenteService {
         }
 
         utenteAutenticato.setUsername(nuovoUsername);
+
+        sendUsernameChangeMail(utenteAutenticato.getEmail(), nuovoUsername, utenteAutenticato);
+
         return utenteRepository.save(utenteAutenticato);
     }
 
@@ -132,6 +134,8 @@ public class UtenteService {
         }
 
         utenteAutenticato.setPassword(passwordEncoder.encode(nuovaPassword));
+
+        sendPasswordChangeMail(utenteAutenticato.getEmail(), utenteAutenticato);
         return utenteRepository.save(utenteAutenticato);
     }
 
@@ -161,4 +165,28 @@ public class UtenteService {
 
         utenteRepository.delete(utenteDaEliminare);
     }
+
+    private void sendUsernameChangeMail(String email, String nuovoUsername, Utente utente) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Just Breathe - Username aggiornato");
+        message.setText("Ciao " + utente.getNome() + "!\n\nIl tuo username è stato aggiornato correttamente.\n\n" +
+                "Il tuo nuovo username è: " + nuovoUsername + "\n\n" +
+                "Se non sei stat* tu, contatta il supporto al più presto.\n\n" +
+                "A presto dal team di Just Breathe 🌿");
+
+        javaMailSender.send(message);
+    }
+
+    private void sendPasswordChangeMail(String email, Utente utente) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Just Breathe - Password aggiornata");
+        message.setText("Ciao " + utente.getNome() + "!\n\nLa tua password è stata modificata correttamente.\n\n" +
+                "Se non sei stat* tu a eseguire questa operazione, contatta il supporto immediatamente.\n\n" +
+                "Grazie per aver scelto Just Breathe 🌿");
+        javaMailSender.send(message);
+    }
+
+
 }
