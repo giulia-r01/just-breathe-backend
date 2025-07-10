@@ -2,6 +2,7 @@ package it.epicode.just_breathe_backend.service;
 
 import it.epicode.just_breathe_backend.dto.LoginDto;
 import it.epicode.just_breathe_backend.exceptions.NotFoundException;
+import it.epicode.just_breathe_backend.exceptions.UnauthorizedException;
 import it.epicode.just_breathe_backend.model.Utente;
 import it.epicode.just_breathe_backend.repository.UtenteRepository;
 import it.epicode.just_breathe_backend.security.JwtTool;
@@ -28,6 +29,11 @@ public class AuthService {
     public Map<String, String> login(LoginDto loginDto) throws NotFoundException {
         Utente utente = utenteRepository.findByUsername(loginDto.getUsername()).orElseThrow(
                 ()->new NotFoundException("Utente con username/password non trovato"));
+
+        if (!utente.isAttivo()) {
+            throw new UnauthorizedException("Il tuo account è disattivato. Contatta l'amministratore.");
+        }
+
 
         if (passwordEncoder.matches(loginDto.getPassword(), utente.getPassword())){
 

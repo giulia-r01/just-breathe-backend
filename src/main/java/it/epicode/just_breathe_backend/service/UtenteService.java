@@ -42,7 +42,7 @@ public class UtenteService {
         utente.setEmail(utenteDto.getEmail());
         utente.setUsername(utenteDto.getUsername());
         utente.setDataRegistrazione(LocalDateTime.now());
-        utente.setAttivo(utente.isAttivo());
+        utente.setAttivo(true);
         utente.setLastAccess(LocalDateTime.now());
         utente.setPassword(passwordEncoder.encode(utenteDto.getPassword()));
         utente.setRuolo(Ruolo.USER);
