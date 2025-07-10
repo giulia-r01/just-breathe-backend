@@ -30,7 +30,7 @@ public class DiarioController {
 
 
     @PostMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Diario saveDiario(@RequestBody @Validated DiarioDto diarioDto,
                              BindingResult bindingResult) throws ValidationException {
@@ -44,13 +44,13 @@ public class DiarioController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Diario getDiario(@PathVariable Long id) throws NotFoundException {
         return diarioService.getDiario(id);
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Page<Diario> getAllDiari(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size,
                                                  @RequestParam(defaultValue = "id") String sortBy){
@@ -58,7 +58,7 @@ public class DiarioController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Diario updateDiario(@PathVariable Long id, @RequestBody
     @Validated DiarioDto diarioDto, BindingResult bindingResult)
             throws NotFoundException, ValidationException {
@@ -71,7 +71,7 @@ public class DiarioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public void deleteDiario(@PathVariable Long id) throws NotFoundException {
         diarioService.deleteDiario(id);
     }

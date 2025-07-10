@@ -31,7 +31,7 @@ public class ToDoController {
     UtenteService utenteService;
 
     @PostMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public ToDoList saveTask(@RequestBody @Validated ToDoListDto toDoListDto,
                              BindingResult bindingResult) throws ValidationException {
@@ -44,13 +44,13 @@ public class ToDoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ToDoList getTask(@PathVariable Long id) throws NotFoundException {
         return toDoService.getToDo(id);
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Page<ToDoList> getTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -62,7 +62,7 @@ public class ToDoController {
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ToDoList updateTask(@PathVariable Long id, @RequestBody
     @Validated ToDoListDto toDoListDto, BindingResult bindingResult)
             throws NotFoundException, ValidationException {
@@ -75,7 +75,7 @@ public class ToDoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public void deleteTask(@PathVariable Long id) throws NotFoundException {
         toDoService.deleteTask(id);
     }

@@ -22,26 +22,26 @@ public class BranoController {
     private BranoService branoService;
 
     @PostMapping("/{moodId}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Brano addBrano(@PathVariable Long moodId, @RequestBody @Validated BranoDto branoDto) throws NotFoundException {
         return branoService.addBranoToMood(moodId, branoDto);
     }
 
     @GetMapping("/mood/{moodId}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<Brano> getBraniByMood(@PathVariable Long moodId) throws NotFoundException {
         return branoService.getBraniByMood(moodId);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Brano getBranoById(@PathVariable Long id) throws NotFoundException {
         return branoService.getBranoById(id);
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Page<Brano> getAllBrani(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -50,20 +50,20 @@ public class BranoController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Brano updateBrano(@PathVariable Long id, @RequestBody @Validated BranoDto branoDto)
             throws NotFoundException {
         return branoService.updateBrano(id, branoDto);
     }
 
     @PatchMapping("/{branoId}/mood/{nuovoMoodId}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Brano cambiaMood(@PathVariable Long branoId, @PathVariable Long nuovoMoodId) throws NotFoundException {
         return branoService.cambiaMoodDelBrano(branoId, nuovoMoodId);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public void deleteBrano(@PathVariable Long id) throws NotFoundException {
         branoService.deleteBrano(id);
     }

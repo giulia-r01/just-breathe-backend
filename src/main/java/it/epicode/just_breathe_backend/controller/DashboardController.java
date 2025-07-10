@@ -18,7 +18,7 @@ public class DashboardController {
     DashboardService dashboardService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public DashboardDto getDashBoard(){
         Utente utente = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

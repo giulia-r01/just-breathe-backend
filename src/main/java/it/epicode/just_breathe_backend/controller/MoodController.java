@@ -31,7 +31,7 @@ public class MoodController {
     UtenteService utenteService;
 
     @PostMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Mood createMood(@RequestParam TipoMood tipoMood) {
         Utente utente = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -40,13 +40,13 @@ public class MoodController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Mood getMood(@PathVariable Long id) throws NotFoundException {
         return moodService.getMood(id);
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Page<Mood> getMoods(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -58,7 +58,7 @@ public class MoodController {
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Mood updateMood(@PathVariable Long id, @RequestBody
     @Validated MoodDto moodDto, BindingResult bindingResult)
             throws NotFoundException, ValidationException {
@@ -71,14 +71,14 @@ public class MoodController {
     }
 
     @PatchMapping("/{id}/mood")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Mood patchTipoMood(@PathVariable Long id, @RequestParam TipoMood tipoMood)
             throws NotFoundException {
         return moodService.patchTipoMood(id, tipoMood);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public void deleteMood(@PathVariable Long id) throws NotFoundException {
         moodService.deleteMood(id);
     }

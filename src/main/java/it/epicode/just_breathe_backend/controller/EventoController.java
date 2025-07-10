@@ -19,22 +19,22 @@ public class EventoController {
     @Autowired
     private EventoService eventoService;
 
-    // Endpoint per cercare eventi esterni per città
+    // cerco eventi esterni per città
     @GetMapping("/esterni")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<EventoDto> cercaEventiEsterni(@RequestParam(required = false) String citta) {
         return eventoService.getAllEventi(citta);
     }
 
 
     @PostMapping
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Evento salvaEvento(@RequestBody EventoDto eventoDto) {
         return eventoService.saveEvento(eventoDto);
     }
 
     @GetMapping("/utente")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Page<Evento> getEventiUtente(@RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "10") int size,
                                         @RequestParam(defaultValue = "dataEvento") String sortBy) {
@@ -42,13 +42,13 @@ public class EventoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Evento getEventoById(@PathVariable Long id) throws NotFoundException, UnauthorizedException {
         return eventoService.getEventoById(id);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public void eliminaEvento(@PathVariable Long id) throws Exception {
         eventoService.deleteEvento(id);
     }

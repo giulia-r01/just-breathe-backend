@@ -31,7 +31,7 @@ public class UtenteController {
     UtenteRepository utenteRepository;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public Utente getUser(@PathVariable Long id) throws NotFoundException {
         return utenteService.getUser(id);
     }
