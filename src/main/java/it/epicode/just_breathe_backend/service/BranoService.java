@@ -32,7 +32,7 @@ public class BranoService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${youtube.api.key}")
+    @Value("${YOUTUBE_API_KEY}")
     private String youtubeApiKey;
 
     public Brano addBranoToMood(Long moodId, BranoDto branoDto) throws NotFoundException {

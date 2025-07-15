@@ -16,7 +16,7 @@ public class JwtTool {
 
     @Value("${jwt.duration}")
     private Long durata;
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String chiaveSegreta;
 
     @Autowired

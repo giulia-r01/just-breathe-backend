@@ -33,7 +33,7 @@ public class EventoService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${predicthq.api.token}")
+    @Value("${PREDICTHQ_API_TOKEN}")
     private String predicthqApiToken;
 
     // Mappa statica città → coordinate (lat, lon)
