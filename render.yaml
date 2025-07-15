@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: just-breathe-backend
+    env: java
+    region: frankfurt
+    branch: main
+    buildCommand: mvn clean package
+    startCommand: java -jar target/just-breathe-backend-0.0.1-SNAPSHOT.jar
+    autoDeploy: true
