@@ -10,9 +10,7 @@ import java.time.LocalDateTime;
 public class EventoDto {
     @NotEmpty(message = "Inserisci il nome dell'evento (campo obbligatorio)")
     private String nome;
-    @NotEmpty(message = "Inserisci il luogo dell'evento (campo obbligatorio)")
     private String luogo;
-    @NotNull(message = "La data dell'evento non può essere nulla")
     private LocalDateTime dataEvento;
     private String immagine;
     private String linkEsterno;

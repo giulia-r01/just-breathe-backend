@@ -33,34 +33,34 @@ public class EventoService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${PREDICTHQ_API_TOKEN}")
-    private String predicthqApiToken;
 
-    // Mappa statica città → coordinate (lat, lon)
-    private static final Map<String, String> cityCoordinates = Map.ofEntries(
-            Map.entry("roma", "41.9028,12.4964"),
-            Map.entry("bari", "41.1171,16.8719"),
-            Map.entry("milano", "45.4642,9.1900"),
-            Map.entry("napoli", "40.8518,14.2681"),
-            Map.entry("torino", "45.0703,7.6869"),
-            Map.entry("firenze", "43.7696,11.2558"),
-            Map.entry("bologna", "44.4949,11.3426"),
-            Map.entry("genova", "44.4056,8.9463"),
-            Map.entry("palermo", "38.1157,13.3615"),
-            Map.entry("verona", "45.4384,10.9916"),
-            Map.entry("cagliari", "39.2238,9.1217"),
-            Map.entry("venezia", "45.4408,12.3155"),
-            Map.entry("trieste", "45.6495,13.7768"),
-            Map.entry("padova", "45.4064,11.8768"),
-            Map.entry("perugia", "43.1107,12.3908"),
-            Map.entry("trento", "46.0748,11.1217"),
-            Map.entry("modena", "44.6471,10.9252"),
-            Map.entry("reggio emilia", "44.6983,10.6290"),
-            Map.entry("rimini", "44.0678,12.5695"),
-            Map.entry("taranto", "40.4644,17.2470"),
-            Map.entry("ancona", "43.6158,13.5189")
+    @Value("${TICKETMASTER_API_KEY}")
+    private String ticketmasterApiKey;
 
+    private static final Map<String, String> traduzioneCitta = Map.ofEntries(
+            Map.entry("roma", "Rome"),
+            Map.entry("milano", "Milan"),
+            Map.entry("napoli", "Naples"),
+            Map.entry("torino", "Turin"),
+            Map.entry("firenze", "Florence"),
+            Map.entry("bologna", "Bologna"),
+            Map.entry("genova", "Genoa"),
+            Map.entry("palermo", "Palermo"),
+            Map.entry("verona", "Verona"),
+            Map.entry("cagliari", "Cagliari"),
+            Map.entry("venezia", "Venice"),
+            Map.entry("trieste", "Trieste"),
+            Map.entry("padova", "Padua"),
+            Map.entry("perugia", "Perugia"),
+            Map.entry("trento", "Trento"),
+            Map.entry("modena", "Modena"),
+            Map.entry("reggio emilia", "Reggio Emilia"),
+            Map.entry("rimini", "Rimini"),
+            Map.entry("taranto", "Taranto"),
+            Map.entry("ancona", "Ancona"),
+            Map.entry("bari", "Bari")
     );
+
 
     public List<EventoDto> getAllEventi(String citta) {
         List<EventoDto> eventiEsterni = new ArrayList<>();
@@ -73,120 +73,73 @@ public class EventoService {
         }
 
         String cittaLower = citta.toLowerCase();
+        String cittaTradotta = traduzioneCitta.getOrDefault(cittaLower, citta);
 
-        if (!cityCoordinates.containsKey(cittaLower)) {
-            EventoDto dtoVuoto = new EventoDto();
-            dtoVuoto.setNome("Non ci sono eventi disponibili nella città cercata.");
-            eventiEsterni.add(dtoVuoto);
-            return eventiEsterni;
-        }
-
-        String latLon = cityCoordinates.get(cittaLower);
-        String[] parts = latLon.split(",");
-        String lat = parts[0].trim();
-        String lon = parts[1].trim();
-
-        String now = ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT);
-
-        String url = "https://api.predicthq.com/v1/events/?active.gte=" + now +
-                "&location_around.origin=" + lat + "," + lon +
-                "&location_around.radius=50km" +
-                "&limit=20";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + predicthqApiToken);
-        headers.set("Accept", "application/json");
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = "https://app.ticketmaster.com/discovery/v2/events.json"
+                + "?city=" + cittaTradotta
+                + "&countryCode=IT"
+                + "&locale=it"
+                + "&apikey=" + ticketmasterApiKey;
 
         try {
-            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 Map<String, Object> body = response.getBody();
+                Map<String, Object> embedded = (Map<String, Object>) body.get("_embedded");
 
-                Object resultsObj = body.get("results");
-
-                if (!(resultsObj instanceof List)) {
+                if (embedded == null || !embedded.containsKey("events")) {
                     EventoDto dtoVuoto = new EventoDto();
                     dtoVuoto.setNome("Non ci sono eventi disponibili nella città cercata.");
                     eventiEsterni.add(dtoVuoto);
                     return eventiEsterni;
                 }
 
-                List<?> rawResults = (List<?>) resultsObj;
+                List<Map<String, Object>> events = (List<Map<String, Object>>) embedded.get("events");
 
-                if (rawResults.isEmpty()) {
-                    EventoDto dtoVuoto = new EventoDto();
-                    dtoVuoto.setNome("Non ci sono eventi disponibili nella città cercata.");
-                    eventiEsterni.add(dtoVuoto);
-                    return eventiEsterni;
-                }
-
-                for (Object eventObj : rawResults) {
-                    if (!(eventObj instanceof Map)) continue;
-
-                    Map<String, Object> event = (Map<String, Object>) eventObj;
+                for (Map<String, Object> event : events) {
                     EventoDto dto = new EventoDto();
 
-                    dto.setNome((String) event.get("title"));
+                    // Nome evento
+                    dto.setNome((String) event.get("name"));
 
-
-                    String startDate = null;
-                    Object startObj = event.get("start");
-                    if (startObj instanceof Map) {
-                        Map<String, Object> startMap = (Map<String, Object>) startObj;
-                        Object dateObj = startMap.get("date");
-                        if (dateObj instanceof String) {
-                            startDate = (String) dateObj;
-                        }
-                    } else if (startObj instanceof String) {
-                        startDate = (String) startObj;
-                    }
-
-                    if (startDate != null) {
-                        try {
-                            dto.setDataEvento(ZonedDateTime.parse(startDate).toLocalDateTime());
-                        } catch (Exception e) {
-                            // fallback lascio null
-                        }
-                    }
-
-                    // Filtra eventi passati
-                    if (dto.getDataEvento() != null && dto.getDataEvento().isBefore(java.time.LocalDateTime.now())) {
-                        continue; // skip evento passato
-                    }
-
-                    // Gestione entities per luogo
-                    Object entitiesObj = event.get("entities");
-                    if (entitiesObj instanceof List) {
-                        List<?> entities = (List<?>) entitiesObj;
-                        for (Object entObj : entities) {
-                            if (entObj instanceof Map) {
-                                Map<String, Object> ent = (Map<String, Object>) entObj;
-                                if ("venue".equals(ent.get("type"))) {
-                                    if (ent.containsKey("formatted_address")) {
-                                        dto.setLuogo((String) ent.get("formatted_address"));
-                                    } else if (ent.containsKey("name")) {
-                                        dto.setLuogo((String) ent.get("name"));
-                                    }
-                                    break;
-                                }
+                    // Data evento
+                    Map<String, Object> dates = (Map<String, Object>) event.get("dates");
+                    if (dates != null && dates.get("start") instanceof Map) {
+                        String dateStr = (String) ((Map<String, Object>) dates.get("start")).get("dateTime");
+                        if (dateStr != null) {
+                            try {
+                                dto.setDataEvento(ZonedDateTime.parse(dateStr).toLocalDateTime());
+                            } catch (Exception e) {
+                                dto.setDataEvento(null);
                             }
                         }
                     }
 
-                    dto.setImmagine(null);
-                    dto.setLinkEsterno(null);
+                    // Escludi eventi passati
+                    if (dto.getDataEvento() != null && dto.getDataEvento().isBefore(java.time.LocalDateTime.now())) {
+                        continue;
+                    }
+
+                    // Luogo
+                    Map<String, Object> venue = null;
+                    try {
+                        venue = (Map<String, Object>) ((List<?>) ((Map<?, ?>) event.get("_embedded")).get("venues")).get(0);
+                    } catch (Exception ignored) {}
+                    if (venue != null && venue.get("name") instanceof String) {
+                        dto.setLuogo((String) venue.get("name"));
+                    }
+
+                    // Immagine
+                    List<Map<String, Object>> images = (List<Map<String, Object>>) event.get("images");
+                    if (images != null && !images.isEmpty()) {
+                        dto.setImmagine((String) images.get(0).get("url"));
+                    }
+
+                    // Link esterno
+                    dto.setLinkEsterno((String) event.get("url"));
 
                     eventiEsterni.add(dto);
-                }
-
-                // Se dopo il filtro la lista è vuota, aggiungo messaggio
-                if (eventiEsterni.isEmpty()) {
-                    EventoDto dtoVuoto = new EventoDto();
-                    dtoVuoto.setNome("Non ci sono eventi disponibili nella città cercata.");
-                    eventiEsterni.add(dtoVuoto);
                 }
             }
         } catch (Exception e) {
@@ -194,9 +147,17 @@ public class EventoService {
             dtoErrore.setNome("Errore durante il recupero degli eventi: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             eventiEsterni.add(dtoErrore);
         }
+
+        if (eventiEsterni.isEmpty()) {
+            EventoDto dtoVuoto = new EventoDto();
+            dtoVuoto.setNome("Non ci sono eventi disponibili nella città cercata.");
+            eventiEsterni.add(dtoVuoto);
+        }
+
         eventiEsterni.sort(Comparator.comparing(EventoDto::getDataEvento, Comparator.nullsLast(Comparator.naturalOrder())));
         return eventiEsterni;
     }
+
 
 
 
