@@ -62,17 +62,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173",
-                "https://just-breathe.vercel.app"));
+
+        // Origin autorizzati
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", appFrontendBaseUrl));
+        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:*", appFrontendBaseUrl));
+
+        // Metodi permessi
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // importante!
+
+        // Headers permessi
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+
+        // Consentire le credenziali
         corsConfiguration.setAllowCredentials(true);
 
+        // Applicazione globale
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 
         return source;
     }
+
 }
