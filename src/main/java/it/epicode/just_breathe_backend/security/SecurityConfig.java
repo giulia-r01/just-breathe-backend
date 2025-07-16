@@ -62,27 +62,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-        // Origin autorizzati
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", appFrontendBaseUrl));
-        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:*", appFrontendBaseUrl));
-
-        // Metodi permessi
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173",
+                appFrontendBaseUrl));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-
-        // Headers permessi
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
-        // Consentire le credenziali
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // importante!
         corsConfiguration.setAllowCredentials(true);
 
-        // Applicazione globale
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 
         return source;
     }
-
 }
