@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -38,19 +40,19 @@ public class EventoService {
     private String ticketmasterApiKey;
 
     private static final Map<String, String> traduzioneCitta = Map.ofEntries(
-            Map.entry("roma", "Rome"),
-            Map.entry("milano", "Milan"),
-            Map.entry("napoli", "Naples"),
-            Map.entry("torino", "Turin"),
-            Map.entry("firenze", "Florence"),
+            Map.entry("roma", "Roma"),
+            Map.entry("milano", "Milano"),
+            Map.entry("napoli", "Napoli"),
+            Map.entry("torino", "Torino"),
+            Map.entry("firenze", "Firenze"),
             Map.entry("bologna", "Bologna"),
-            Map.entry("genova", "Genoa"),
+            Map.entry("genova", "Genova"),
             Map.entry("palermo", "Palermo"),
             Map.entry("verona", "Verona"),
             Map.entry("cagliari", "Cagliari"),
-            Map.entry("venezia", "Venice"),
+            Map.entry("venezia", "Venezia"),
             Map.entry("trieste", "Trieste"),
-            Map.entry("padova", "Padua"),
+            Map.entry("padova", "Padova"),
             Map.entry("perugia", "Perugia"),
             Map.entry("trento", "Trento"),
             Map.entry("modena", "Modena"),
@@ -75,11 +77,13 @@ public class EventoService {
         String cittaLower = citta.toLowerCase();
         String cittaTradotta = traduzioneCitta.getOrDefault(cittaLower, citta);
 
+        String cittaEncoded = URLEncoder.encode(cittaTradotta, StandardCharsets.UTF_8);
         String url = "https://app.ticketmaster.com/discovery/v2/events.json"
-                + "?city=" + cittaTradotta
+                + "?city=" + cittaEncoded
                 + "&countryCode=IT"
                 + "&locale=it"
                 + "&apikey=" + ticketmasterApiKey;
+
 
         try {
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
