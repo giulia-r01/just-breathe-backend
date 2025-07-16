@@ -75,8 +75,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
-
-        System.out.println("FRONTEND URL PERMESSO: " + appFrontendBaseUrl);
+        
         return source;
     }
 }
