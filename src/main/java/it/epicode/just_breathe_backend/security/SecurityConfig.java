@@ -64,8 +64,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173",
-                appFrontendBaseUrl));
+        corsConfiguration.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                appFrontendBaseUrl
+        ));
+
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // importante!
         corsConfiguration.setAllowCredentials(true);
@@ -73,6 +76,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 
+        System.out.println("FRONTEND URL PERMESSO: " + appFrontendBaseUrl);
         return source;
     }
 }
