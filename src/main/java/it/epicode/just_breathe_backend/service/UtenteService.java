@@ -87,7 +87,7 @@ public class UtenteService {
 
         Utente userDaPatchare = getUser(id);
         String url = (String) cloudinary.uploader().upload(file.getBytes(),
-                Collections.emptyMap()).get("url");
+                Collections.emptyMap()).get("secure_url");
 
         if (utenteAutenticato.getRuolo().name().equals("USER") && !utenteAutenticato.getId().equals(id)) {
             throw new UnauthorizedException("Puoi cambiare solo la tua immagine del profilo.");
