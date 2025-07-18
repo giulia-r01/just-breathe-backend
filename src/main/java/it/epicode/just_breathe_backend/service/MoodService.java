@@ -53,7 +53,7 @@ public class MoodService {
 
     public Page<Mood> getAllMoodsByUser(int page, int size, String sortBy) {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         return moodRepository.findByUtente(utenteAutenticato, pageable);
     }
 
