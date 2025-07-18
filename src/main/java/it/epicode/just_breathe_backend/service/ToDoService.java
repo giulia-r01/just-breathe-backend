@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 @Service
@@ -57,11 +58,11 @@ public class ToDoService {
         return toDo;
     }
 
-    public Page<ToDoList> getAllTasks(int page, int size, String sortBy) {
+    public List<ToDoList> getAllTasks() {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return toDoRepository.findByUtente(utenteAutenticato, pageable);
+        return toDoRepository.findByUtenteOrderByDataCreazioneTaskAsc(utenteAutenticato);
     }
+
 
 
 

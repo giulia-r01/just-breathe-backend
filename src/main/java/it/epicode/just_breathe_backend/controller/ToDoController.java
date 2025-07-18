@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "tasks")
@@ -51,14 +52,10 @@ public class ToDoController {
 
     @GetMapping("")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public Page<ToDoList> getTasks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "dataCreazioneTask") String sortBy) {
-
-
-        return toDoService.getAllTasks(page, size, sortBy);
+    public List<ToDoList> getTasks() {
+        return toDoService.getAllTasks();
     }
+
 
 
     @PutMapping("/{id}")

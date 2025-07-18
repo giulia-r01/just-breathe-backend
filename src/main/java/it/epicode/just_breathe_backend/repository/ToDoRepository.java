@@ -12,7 +12,9 @@ import java.util.List;
 public interface ToDoRepository extends JpaRepository<ToDoList, Long>
         {
 
-    Page<ToDoList> findByUtente(Utente utente, Pageable pageable);
+
+
+    List<ToDoList> findByUtenteOrderByDataCreazioneTaskAsc(Utente utente);
 
     List<ToDoList> findByUtenteIdAndTipoTaskNotOrderByDataCreazioneTaskAsc(Long utenteId, TipoTask tipoTask);
 
