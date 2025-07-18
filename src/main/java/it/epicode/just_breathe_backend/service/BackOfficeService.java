@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,9 @@ public class BackOfficeService {
 
     @Autowired
     MoodRepository moodRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public Page<BackOfficeDto> getAllUsers(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
@@ -67,8 +72,46 @@ public class BackOfficeService {
         Utente utente = utenteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Utente con id " + id + " non trovato"));
         utente.setAttivo(attivo);
+
+        if (!attivo) {
+            inviaEmailDisattivazione(utente);
+        }
+
+        if (attivo) {
+            inviaEmailRiattivazione(utente);
+        }
+
         return utenteRepository.save(utente);
     }
+
+    public void inviaEmailDisattivazione(Utente utente) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(utente.getEmail());
+        message.setSubject("Just Breathe - Account disattivato");
+
+        message.setText("Ciao " + utente.getNome() + "!\n\n" +
+                "Il tuo account è stato disattivato, probabilmente a causa di inattività o per motivi amministrativi.\n\n" +
+                "Se pensi che si tratti di un errore o vuoi riattivare il tuo profilo, contatta il supporto all’indirizzo: just.breathe.tam@gmail.com\n\n" +
+                "Grazie per aver fatto parte della nostra community 💙\n\n" +
+                "A presto dal team di Just Breathe 🌿");
+
+        javaMailSender.send(message);
+    }
+
+    private void inviaEmailRiattivazione(Utente utente) {
+        String email = utente.getEmail();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Just Breathe - Account riattivato");
+        message.setText("Ciao " + utente.getNome() + "!\n\n" +
+                "Il tuo account su Just Breathe è stato riattivato con successo.\n\n" +
+                "Ora puoi accedere di nuovo alla tua area personale.\n\n" +
+                "Buona continuazione dal team di Just Breathe 🌿");
+
+        javaMailSender.send(message);
+    }
+
+
 
     public LocalDateTime getLastAccess(Long id) throws NotFoundException {
         Utente utente = utenteRepository.findById(id)
