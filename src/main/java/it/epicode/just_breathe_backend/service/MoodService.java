@@ -57,6 +57,7 @@ public class MoodService {
         return moodRepository.findByUtente(utenteAutenticato, pageable);
     }
 
+
     public Mood getUltimoMoodPerUtente(Long utenteId) {
         return moodRepository.findTopByUtenteIdOrderByDataCreazioneDesc(utenteId)
                 .orElse(null);

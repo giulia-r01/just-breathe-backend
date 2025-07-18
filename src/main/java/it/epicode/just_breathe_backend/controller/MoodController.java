@@ -18,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping(path = "moods")
@@ -55,6 +57,7 @@ public class MoodController {
 
         return moodService.getAllMoodsByUser(page, size, sortBy);
     }
+
 
 
     @PutMapping("/{id}")
