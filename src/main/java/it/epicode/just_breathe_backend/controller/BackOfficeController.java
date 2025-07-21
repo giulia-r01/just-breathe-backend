@@ -8,6 +8,9 @@ import it.epicode.just_breathe_backend.model.Utente;
 import it.epicode.just_breathe_backend.service.BackOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,8 +77,14 @@ public class BackOfficeController {
 
     @GetMapping("/statistiche/attivita-utenti")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<Map<String, Object>> getAttivitaDettagliatePerUtente() {
-        return backOfficeService.getAttivitaDettagliatePerUtente();
+    public Page<Map<String, Object>> getAttivitaDettagliatePerUtente(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return backOfficeService.getAttivitaDettagliatePerUtente(pageable);
     }
+
 
 }

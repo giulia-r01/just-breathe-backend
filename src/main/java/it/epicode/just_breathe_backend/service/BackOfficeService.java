@@ -8,10 +8,7 @@ import it.epicode.just_breathe_backend.model.Utente;
 import it.epicode.just_breathe_backend.repository.MoodRepository;
 import it.epicode.just_breathe_backend.repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -150,11 +147,10 @@ public class BackOfficeService {
         return (double) totalActivities / utenti.size();
     }
 
-    public List<Map<String, Object>> getAttivitaDettagliatePerUtente() {
-        List<Utente> utenti = utenteRepository.findAll();
-        List<Map<String, Object>> lista = new ArrayList<>();
+    public Page<Map<String, Object>> getAttivitaDettagliatePerUtente(Pageable pageable) {
+        Page<Utente> utentiPage = utenteRepository.findAll(pageable);
 
-        for (Utente u : utenti) {
+        List<Map<String, Object>> contenuto = utentiPage.stream().map(u -> {
             Map<String, Object> mappa = new HashMap<>();
             mappa.put("id", u.getId());
             mappa.put("username", u.getUsername());
@@ -162,11 +158,10 @@ public class BackOfficeService {
             mappa.put("tasks", u.getToDoLists() != null ? u.getToDoLists().size() : 0);
             mappa.put("eventi", u.getEventi() != null ? u.getEventi().size() : 0);
             mappa.put("moods", u.getMoods() != null ? u.getMoods().size() : 0);
+            return mappa;
+        }).toList();
 
-            lista.add(mappa);
-        }
-
-        return lista;
+        return new PageImpl<>(contenuto, pageable, utentiPage.getTotalElements());
     }
 
 }
