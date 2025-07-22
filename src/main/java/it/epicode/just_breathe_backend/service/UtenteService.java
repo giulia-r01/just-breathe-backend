@@ -157,13 +157,14 @@ public class UtenteService {
     public void deleteUser(Long id) throws NotFoundException {
         Utente utenteAutenticato = (Utente) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (utenteAutenticato.getRuolo().name().equals("USER") && utenteAutenticato.getId() != id) {
+        if (utenteAutenticato.getRuolo().name().equals("USER") && !utenteAutenticato.getId().equals(id)) {
             throw new UnauthorizedException("Non puoi eliminare un altro utente.");
         }
 
         Utente utenteDaEliminare = getUser(id);
 
         utenteRepository.delete(utenteDaEliminare);
+        sendAccountDeletionMail(utenteDaEliminare.getEmail(), utenteDaEliminare);
     }
 
     private void sendUsernameChangeMail(String email, String nuovoUsername, Utente utente) {
@@ -187,6 +188,19 @@ public class UtenteService {
                 "Grazie per aver scelto Just Breathe 🌿");
         javaMailSender.send(message);
     }
+
+    private void sendAccountDeletionMail(String email, Utente utente) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Just Breathe - Account eliminato");
+        message.setText("Ciao " + utente.getNome() + "!\n\n" +
+                "Ti confermiamo che il tuo account è stato eliminato con successo.\n\n" +
+                "Se non sei stato tu, contatta il supporto al più presto.\n\n" +
+                "Ti ringraziamo per aver fatto parte della community di Just Breathe 🌿");
+
+        javaMailSender.send(message);
+    }
+
 
 
 }
