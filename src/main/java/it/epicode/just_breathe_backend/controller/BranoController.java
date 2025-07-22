@@ -4,7 +4,6 @@ import it.epicode.just_breathe_backend.dto.BranoDto;
 import it.epicode.just_breathe_backend.exceptions.NotFoundException;
 import it.epicode.just_breathe_backend.model.Brano;
 import it.epicode.just_breathe_backend.service.BranoService;
-import it.epicode.just_breathe_backend.service.MoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

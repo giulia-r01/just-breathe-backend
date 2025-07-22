@@ -3,7 +3,6 @@ package it.epicode.just_breathe_backend.dto;
 import it.epicode.just_breathe_backend.enumeration.TipoMood;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

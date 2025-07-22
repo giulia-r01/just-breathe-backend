@@ -19,7 +19,7 @@ public class EventoController {
     @Autowired
     private EventoService eventoService;
 
-    // cerco eventi esterni per città
+
     @GetMapping("/esterni")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<EventoDto> cercaEventiEsterni(@RequestParam(required = false) String citta) {

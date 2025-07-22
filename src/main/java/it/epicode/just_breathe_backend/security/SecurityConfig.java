@@ -19,7 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity //abilita la classe a essere responsabile della sicurezza dei servizi
+@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -38,7 +38,7 @@ public class SecurityConfig {
 
 
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/auth/**", "/password/recupero", "/password/reset").permitAll());
-// httpSecurity.authorizeHttpRequests(http->http.requestMatchers(HttpMethod.GET,"/auth/**").permitAll());
+
 
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/utenti/**").permitAll());
         httpSecurity.authorizeHttpRequests(http->http.requestMatchers("/diari/**").permitAll());

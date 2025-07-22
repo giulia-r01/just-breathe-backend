@@ -12,9 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -104,10 +100,8 @@ public class EventoService {
                 for (Map<String, Object> event : events) {
                     EventoDto dto = new EventoDto();
 
-                    // Nome evento
                     dto.setNome((String) event.get("name"));
 
-                    // Data evento
                     Map<String, Object> dates = (Map<String, Object>) event.get("dates");
                     if (dates != null && dates.get("start") instanceof Map) {
                         String dateStr = (String) ((Map<String, Object>) dates.get("start")).get("dateTime");
@@ -120,12 +114,10 @@ public class EventoService {
                         }
                     }
 
-                    // Escludi eventi passati
                     if (dto.getDataEvento() != null && dto.getDataEvento().isBefore(java.time.LocalDateTime.now())) {
                         continue;
                     }
 
-                    // Luogo
                     Map<String, Object> venue = null;
                     try {
                         venue = (Map<String, Object>) ((List<?>) ((Map<?, ?>) event.get("_embedded")).get("venues")).get(0);
@@ -134,13 +126,11 @@ public class EventoService {
                         dto.setLuogo((String) venue.get("name"));
                     }
 
-                    // Immagine
                     List<Map<String, Object>> images = (List<Map<String, Object>>) event.get("images");
                     if (images != null && !images.isEmpty()) {
                         dto.setImmagine((String) images.get(0).get("url"));
                     }
 
-                    // Link esterno
                     dto.setLinkEsterno((String) event.get("url"));
 
                     eventiEsterni.add(dto);

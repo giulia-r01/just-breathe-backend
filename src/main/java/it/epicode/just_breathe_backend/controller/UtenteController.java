@@ -2,14 +2,12 @@ package it.epicode.just_breathe_backend.controller;
 
 import it.epicode.just_breathe_backend.dto.UtenteDto;
 import it.epicode.just_breathe_backend.exceptions.NotFoundException;
-import it.epicode.just_breathe_backend.exceptions.UnauthorizedException;
 import it.epicode.just_breathe_backend.exceptions.ValidationException;
 import it.epicode.just_breathe_backend.model.Utente;
 import it.epicode.just_breathe_backend.repository.UtenteRepository;
 import it.epicode.just_breathe_backend.service.UtenteService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;

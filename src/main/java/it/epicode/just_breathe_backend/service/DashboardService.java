@@ -37,10 +37,10 @@ public class DashboardService {
     public DashboardDto getDashboard(Utente utente){
         DashboardDto dashboardDto = new DashboardDto();
 
-        //respiro
+
         respiroRepository.findTopByOrderByDataCreazioneDesc().ifPresent(dashboardDto::setRespiro);
 
-        //eventi
+
         List<Evento> eventiSalvati = eventoRepository.findByUtenteOrderByDataEventoDesc(utente);
         if (eventiSalvati.isEmpty()) {
             dashboardDto.setMessaggioEvento("Al momento non hai salvato nessun evento a cui sei interessato");
@@ -49,7 +49,7 @@ public class DashboardService {
             dashboardDto.setMessaggioEvento(null);
         }
 
-        //diario
+
         diarioRepository.findTopByUtenteIdOrderByDataUltimaModificaDesc(utente.getId()).ifPresentOrElse(diario -> {
                     dashboardDto.setDiario(diario);
                     dashboardDto.setMessaggioDiario(null);
@@ -57,7 +57,7 @@ public class DashboardService {
                 () -> dashboardDto.setMessaggioDiario("Non hai ancora scritto nulla nel tuo diario, comincia ora!"));
 
 
-        //ToDoList
+
         List<ToDoList> tasks = toDoRepository.findByUtenteIdAndTipoTaskNotOrderByDataCreazioneTaskAsc(utente.getId(), TipoTask.FATTO);
         if (tasks.isEmpty()) {
             dashboardDto.setMessaggioToDo("Non hai ancora task da completare, organizza il tuo tempo!");
@@ -66,7 +66,7 @@ public class DashboardService {
             dashboardDto.setMessaggioToDo(null);
         }
 
-        //mood
+
         moodRepository.findTopByUtenteIdOrderByDataCreazioneDesc(utente.getId())
                 .ifPresentOrElse(mood -> {
                     dashboardDto.setMood(mood);
